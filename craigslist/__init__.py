@@ -280,6 +280,11 @@ class CraigslistBase(object):
 
         result['images'] = images
 
+        # Extract and attach tags (e.g. 'no smoking')
+        map_and_attrs = soup.find('div', class_='mapAndAttrs')
+        tags = map_and_attrs.find_all('span', class_='')
+        result['tags'] = [ t.text.strip() for t in tags ]
+
     def fetch_content(self, url):
         response = requests_get(url, logger=self.logger)
         self.logger.info('GET %s', response.url)
