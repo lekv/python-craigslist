@@ -264,7 +264,7 @@ class CraigslistBase(object):
         return result
 
     def include_details(self, result, soup):
-        """ Adds description, images to result """
+        """ Adds description, images, tags, address string to result """
 
         self.logger.debug('Adding details to result...')
 
@@ -284,6 +284,10 @@ class CraigslistBase(object):
         map_and_attrs = soup.find('div', class_='mapAndAttrs')
         tags = map_and_attrs.find_all('span', class_='')
         result['tags'] = [ t.text.strip() for t in tags ]
+
+        # Extract map address string
+        address = map_and_attrs.find('div', class_='mapaddress')
+        result['address'] = address and address.text.strip() or ""
 
     def fetch_content(self, url):
         response = requests_get(url, logger=self.logger)
